@@ -1,0 +1,81 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+# The jobs only read the repository.
+permissions:
+  contents: read
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  # Built and tested as glidex's CI did before the crates moved here, with
+  # every database glidex-raftstore's tests open replayed from its write
+  # sets and compared (glidex spec/14-clustering.md §6.1).
+  test:
+    runs-on: ubuntu-26.04
+    timeout-minutes: 30
+    steps:
+    - uses: actions/checkout@v7
+    - name: Build
+      run: cargo build --workspace --all-targets --locked
+    - name: Test, replaying write sets
+      run: GLIDEX_CHECK_WRITE_SETS=1 cargo test --workspace --locked
+
+  clippy:
+    runs-on: ubuntu-26.04
+    timeout-minutes: 20
+    steps:
+    - uses: actions/checkout@v7
+    - name: Clippy, warnings as errors
+      run: cargo clippy --workspace --all-targets --locked -- -D warnings
+
+  # Formatting: rustfmt's defaults (rustfmt.toml), checked, not applied.
+  fmt:
+    runs-on: ubuntu-26.04
+    timeout-minutes: 5
+    steps:
+    - uses: actions/checkout@v7
+    - name: Check formatting
+      run: cargo fmt --all --check
+
+  # Public API docs build without warnings (broken links fail).
+  doc:
+    runs-on: ubuntu-26.04
+    timeout-minutes: 15
+    steps:
+    - uses: actions/checkout@v7
+    - name: rustdoc
+      run: cargo doc --workspace --no-deps --locked
+      env:
+        RUSTDOCFLAGS: -D warnings
+
+  # Cargo.lock against the RustSec advisory database. Accepted advisories,
+  # and why, are in .cargo/audit.toml.
+  audit:
+    runs-on: ubuntu-26.04
+    timeout-minutes: 10
+    steps:
+    - uses: actions/checkout@v7
+    - uses: taiki-e/install-action@v2
+      with:
+        tool: cargo-audit
+    - name: Audit dependencies
+      run: cargo audit
+
+  # @glidex/ui-kit is TypeScript source the apps bundle; it is type-checked
+  # here against the React types it expects.
+  ui-kit:
+    runs-on: ubuntu-26.04
+    timeout-minutes: 10
+    steps:
+    - uses: actions/checkout@v7
+    - uses: oven-sh/setup-bun@v2
+    - name: Type-check
+      working-directory: ui-kit
+      run: bun install --frozen-lockfile && bun run typecheck

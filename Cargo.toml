@@ -1,0 +1,27 @@
+[workspace]
+members = [
+    "crates/glidex-auth",
+    "crates/glidex-authd",
+    "crates/glidex-raftstore",
+    "crates/glidex-tls",
+    "crates/glidex-topology",
+    "crates/glidex-trust",
+]
+resolver = "2"
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/CMKL-APEX/glidex-commons"
+homepage = "https://github.com/CMKL-APEX/glidex-commons"
+
+[workspace.dependencies]
+# Workspace crates a published crate depends on: crates.io needs a
+# version beside the path. It moves with `[workspace.package]` version.
+glidex-tls = { path = "crates/glidex-tls", version = "0.1.0" }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tokio = { version = "1", features = ["full"] }
+thiserror = "2"
+tracing = "0.1"
