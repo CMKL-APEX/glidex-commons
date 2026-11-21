@@ -49,7 +49,8 @@ workspace with `cargo build -p glidex-authd`.
 install a package from a repository's subdirectory. Each app keeps an
 unchanged copy at the tag it pins, replaced by its sync script and checked
 against this repository in its CI. `react` and `@types/react` are peer
-dependencies; the kit's own dev dependencies are only for its type check.
+dependencies. The kit is type-checked from the repository's root
+(`package.json`, `tsconfig.json`), so its own files are all an app copies.
 
 ## Releases
 
@@ -70,7 +71,7 @@ cargo fmt --all --check
 cargo clippy --workspace --all-targets --locked -- -D warnings
 GLIDEX_CHECK_WRITE_SETS=1 cargo test --workspace --locked
 RUSTDOCFLAGS=-D\ warnings cargo doc --workspace --no-deps --locked
-(cd ui-kit && bun install --frozen-lockfile && bun run typecheck)
+bun install --frozen-lockfile && bun run typecheck   # the UI kit
 ```
 
 ## License

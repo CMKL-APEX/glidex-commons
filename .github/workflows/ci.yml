@@ -76,6 +76,5 @@ jobs:
     steps:
     - uses: actions/checkout@v7
     - uses: oven-sh/setup-bun@v2
-    - name: Type-check
-      working-directory: ui-kit
+    - name: Type-check (package.json and tsconfig.json at the root)
       run: bun install --frozen-lockfile && bun run typecheck

@@ -58,8 +58,7 @@ directory at the glidex-commons tag it pins (its sync script replaces it,
 and its CI checks it against that tag). The app lists the copy as a bun
 workspace (`"@glidex/ui-kit": "workspace:*"`) and names its `src` with
 `@source` in its `index.css`, so the classes used here are generated.
-`react` and `@types/react` are peer dependencies: the app's. The dev
-dependencies here are only for `bun run typecheck`.
+`react` and `@types/react` are peer dependencies: the app's.
 The kit's classes mean the same in Tailwind 3 and 4 (both apps use 4):
 no bare `rounded`, `shadow` or `ring`, which changed size in 4, and no
 `*-opacity-*`, which 4 removed.
