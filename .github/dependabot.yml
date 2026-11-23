@@ -1,0 +1,31 @@
+# Version updates, weekly. Minor and patch updates of each ecosystem come
+# as one pull request; a major update comes alone. Security updates are
+# turned on in the repository's settings and come as they're found.
+version: 2
+updates:
+  - package-ecosystem: "cargo"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    groups:
+      cargo:
+        update-types: ["minor", "patch"]
+
+  # The UI kit's type-checking dependencies (package.json, bun.lock).
+  - package-ecosystem: "bun"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    groups:
+      bun:
+        update-types: ["minor", "patch"]
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      actions:
+        update-types: ["minor", "patch"]
