@@ -30,7 +30,7 @@ these crates are in its own `spec/04-decisions.md`.
 Pin a release tag, the same in every crate of the workspace:
 
 ```toml
-glidex-tls = { git = "https://github.com/CMKL-APEX/glidex-commons", tag = "v0.1.0" }
+glidex-tls = { git = "https://github.com/CMKL-APEX/glidex-commons", tag = "v0.1.1" }
 ```
 
 To try a change here from glidex or hyperstor before it is released,
