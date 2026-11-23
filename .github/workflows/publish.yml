@@ -38,6 +38,25 @@ jobs:
     - uses: actions/checkout@v7
     - name: Package and build, uploading nothing
       run: cargo publish --workspace --dry-run --locked
+    # What an upload would contain, crate by crate, for a reviewer to read;
+    # and each package carries the license texts.
+    - name: List the packages' contents
+      run: |
+        status=0
+        for crate in $(cargo metadata --format-version 1 --no-deps \
+            | jq -r '.packages[] | select(.publish != []) | .name'); do
+          echo "::group::$crate"
+          cargo package --list --locked -p "$crate" | tee contents.txt
+          echo "::endgroup::"
+          for file in LICENSE-MIT LICENSE-APACHE; do
+            if ! grep -qx "$file" contents.txt; then
+              echo "::error::$crate's package has no $file"
+              status=1
+            fi
+          done
+        done
+        rm -f contents.txt
+        exit $status
 
   publish:
 
