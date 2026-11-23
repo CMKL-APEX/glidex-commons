@@ -963,7 +963,7 @@ dependencies = [
 
 [[package]]
 name = "glidex-auth"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "arc-swap",
  "base64 0.23.1",
@@ -982,7 +982,7 @@ dependencies = [
 
 [[package]]
 name = "glidex-authd"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "libc",
  "libloading",
@@ -998,7 +998,7 @@ dependencies = [
 
 [[package]]
 name = "glidex-raftstore"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "async-trait",
  "base64 0.23.1",
@@ -1017,7 +1017,7 @@ dependencies = [
 
 [[package]]
 name = "glidex-tls"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "arc-swap",
  "http",
@@ -1042,7 +1042,7 @@ dependencies = [
 
 [[package]]
 name = "glidex-topology"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "nix",
  "serde",
@@ -1051,7 +1051,7 @@ dependencies = [
 
 [[package]]
 name = "glidex-trust"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "aws-lc-rs",
  "base64 0.23.1",

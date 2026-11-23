@@ -30,7 +30,7 @@ these crates are in its own `spec/04-decisions.md`.
 Pin a release tag, the same in every crate of the workspace:
 
 ```toml
-glidex-tls = { git = "https://github.com/CMKL-APEX/glidex-commons", tag = "v0.1.0" }
+glidex-tls = { git = "https://github.com/CMKL-APEX/glidex-commons", tag = "v0.1.1" }
 ```
 
 To try a change here from glidex or hyperstor before it is released,
@@ -60,9 +60,58 @@ dependencies. The kit is type-checked from the repository's root
   requests.
 - While the version is `0.x`, a minor bump (`0.1` → `0.2`) may break the
   API; a patch release doesn't.
-- crates.io: the `crates.io` workflow packages every publishable crate on
-  each change without uploading. Run it by hand from a release tag, with
-  `publish` checked, to upload.
+- crates.io: the five library crates are published there (`glidex-authd`
+  isn't: `publish = false`). The `crates.io` workflow packages each one on
+  every change without uploading, lists what its package contains and
+  fails if the license files are missing. An upload is a manual run from a
+  release tag, and is permanent: a version can be yanked, never deleted or
+  replaced.
+
+### A release
+
+1. Set `[workspace.package] version` and the `version` of
+   `[workspace.dependencies] glidex-tls` to `X.Y.Z`, run the checks below,
+   and merge.
+2. Tag `vX.Y.Z` on `main` and make a GitHub release from it.
+3. Actions → crates.io → Run workflow, from **the tag** (not `main`), with
+   `publish` checked. The run refuses a `-dev` version, or a ref other
+   than `refs/tags/vX.Y.Z`.
+4. A reviewer of the `crates-io` environment approves the run, and it
+   uploads.
+5. Check the five crates on crates.io at the new version.
+6. Move the pins in glidex and hyperstor, in their own pull requests.
+
+The upload uses Trusted Publishing: crates.io accepts the workflow's OIDC
+token, so the repository stores no crates.io token. The `crates-io`
+environment has required reviewers, deploys only from `v*` tags and holds
+no secrets.
+
+### The first publish of a crate
+
+Trusted Publishing can be set up only for a crate that already exists on
+crates.io, so a crate's first version is uploaded by hand, by an owner
+with their own crates.io account:
+
+1. Make a crates.io API token with the `publish-new` scope only, limited
+   to crates `glidex-*`, with a short expiry.
+2. Publish from the release tag:
+
+   ```sh
+   git checkout vX.Y.Z
+   cargo login          # the token at the prompt, never on a command line
+   cargo publish --workspace --locked --dry-run
+   cargo publish --workspace --locked
+   cargo logout
+   ```
+
+   (`-p <crate>` instead of `--workspace` for one crate added later.)
+3. Revoke the token on crates.io.
+4. For each new crate, on crates.io: Settings → Trusted Publishing → add
+   GitHub, with owner `CMKL-APEX`, repository `glidex-commons`, workflow
+   `publish.yml`, environment `crates-io`.
+5. Give each new crate a second owner
+   (`cargo owner --add github:CMKL-APEX:<team> <crate>`), so that it
+   doesn't depend on one account.
 
 ## Checks
 
