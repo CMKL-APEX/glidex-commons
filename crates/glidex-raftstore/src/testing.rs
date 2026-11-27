@@ -239,7 +239,7 @@ pub fn durable_applied(path: &Path) -> Option<u64> {
     let db = redb::Database::create(&copy).unwrap();
     let txn = redb::ReadableDatabase::begin_read(&db).unwrap();
     let t = txn.open_table(definition::<Test>(Test::LOCAL)).unwrap();
-    let v = t.get(crate::store::LAST_APPLIED).unwrap()?;
+    let v = redb::ReadableTable::get(&t, crate::store::LAST_APPLIED).unwrap()?;
     let id: crate::raft::LogId = serde_json::from_slice(v.value()).unwrap();
     Some(id.index)
 }
