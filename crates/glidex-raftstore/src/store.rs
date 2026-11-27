@@ -14,7 +14,6 @@
 //! What the store holds is the application's [`Schema`]: its tables, and
 //! who may write.
 
-#[cfg(test)]
 use redb::ReadableTable as _;
 use redb::{ReadTransaction, ReadableDatabase, TableDefinition, TableHandle};
 use serde::de::DeserializeOwned;
